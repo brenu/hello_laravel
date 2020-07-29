@@ -31,6 +31,6 @@ Route::get('/test', function(Request $request) {
 });
 
 //Products Route
-Route::get('/products', function() {
-    return \App\Product::all();
+Route::namespace('Api')->group(function(){
+    Route::get('/products', 'ProductController@index');
 });
