@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Product;
+use App\Http\Resources\ProductResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -24,9 +25,10 @@ class ProductController extends Controller
     }
 
     public function show($id){
-        $products = $this->product->find($id);
+        $product = $this->product->find($id);
    
-        return response()->json($products);
+        //return response()->json($products);
+        return new ProductResource($product);
     }
 
     public function save(Request $request){
