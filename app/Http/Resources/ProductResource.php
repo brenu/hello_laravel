@@ -21,4 +21,8 @@ class ProductResource extends JsonResource
         ];
         //return $this->resource->toArray();
     }
+
+    public function with($request){
+        return ['extra-content' => 'Some extra content'];
+    }
 }
