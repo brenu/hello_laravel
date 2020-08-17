@@ -28,8 +28,8 @@ class ProductController extends Controller
             $expressions = explode(';', $request->get('conditions'));
             
             foreach($expressions as $e){
-                $explode = explode('=', $e);
-                $products = $products->where($explode[0], $explode[1]);
+                $explode = explode(':', $e);
+                $products = $products->where($explode[0], $explode[1], $explode[2]);
             }
         }
 
