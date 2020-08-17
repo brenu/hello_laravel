@@ -19,10 +19,28 @@ class ProductController extends Controller
        $this->product = $product;
     }
    
-    public function index(){
-        $products = $this->product->paginate(1);
+    public function index(Request $request){
+        $products = $this->product;
+
+        if($request->has('fields')){
+            $fields = $request->get('fields');
+
+            /*
+            * ----------------------------------------
+            *   SelectRaw
+            * ----------------------------------------
+            *  Se eu tivesse usado o select normal
+            *  para a query, ele não iria encontrar
+            *  nada útil pois procuraria por um
+            *  único campo chamado "name,price".
+            *  Mas quando usamos o selectRaw, ele
+            *  considera a vírgula como uma vírgula
+            *  por fora, e não parte da string :)
+            */
+            $products = $products->selectRaw($fields);
+        }
    
-        return new ProductCollection($products);
+        return new ProductCollection($products->paginate(10));
     }
 
     public function show($id){
