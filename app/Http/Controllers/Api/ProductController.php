@@ -22,6 +22,17 @@ class ProductController extends Controller
     public function index(Request $request){
         $products = $this->product;
 
+        //conditions=name:Breno;price=x
+        if($request->has('conditions')){
+            // Depois pesquisa o que esse método explode faz
+            $expressions = explode(';', $request->get('conditions'));
+            
+            foreach($expressions as $e){
+                $explode = explode('=', $e);
+                $products = $products->where($explode[0], $explode[1]);
+            }
+        }
+
         if($request->has('fields')){
             $fields = $request->get('fields');
 
