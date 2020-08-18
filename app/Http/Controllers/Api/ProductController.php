@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Product;
+use App\Repository\ProductRepository;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductCollection;
 use App\Http\Controllers\Controller;
@@ -21,36 +22,16 @@ class ProductController extends Controller
    
     public function index(Request $request){
         $products = $this->product;
-
-        //conditions=name:Breno;price=x
         if($request->has('conditions')){
-            // Depois pesquisa o que esse método explode faz
-            $expressions = explode(';', $request->get('conditions'));
-            
-            foreach($expressions as $e){
-                $explode = explode(':', $e);
-                $products = $products->where($explode[0], $explode[1], $explode[2]);
-            }
+            $products = new ProductRepository($products, $request);
+            $products = $products->selectConditions($request->get('conditions'));
         }
 
         if($request->has('fields')){
-            $fields = $request->get('fields');
-
-            /*
-            * ----------------------------------------
-            *   SelectRaw
-            * ----------------------------------------
-            *  Se eu tivesse usado o select normal
-            *  para a query, ele não iria encontrar
-            *  nada útil pois procuraria por um
-            *  único campo chamado "name,price".
-            *  Mas quando usamos o selectRaw, ele
-            *  considera a vírgula como uma vírgula
-            *  por fora, e não parte da string :)
-            */
-            $products = $products->selectRaw($fields);
+            $products = new ProductRepository($products, $request);
+            $products = $products->selectFilter($request->get('fields'));
         }
-   
+        
         return new ProductCollection($products->paginate(10));
     }
 
